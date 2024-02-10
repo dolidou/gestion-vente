@@ -1,0 +1,215 @@
+{% extends "index.html" %}
+
+{% block title %}Utilisateurs{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-11">
+                <div class="text-right mb-3"> <!-- Utilisation de la classe text-right pour aligner à droite et mb-3 pour la marge en bas -->
+                        <!-- <button class="btn btn-primary" id="afficherajouterutilisateur" onclick="affichecreationutilisateur()">Ajouter un utilisateur</button> -->
+                        <a   class="btn bg-gradient-primary border-left-secondary border-bottom-secondary ml-2 text-light btn-icon-split" id="afficherajouterutilisateur" onclick="affichecreationutilisateur()">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-arrow-right"  ></i>
+                            </span>
+                            <span class="text text-black">Créer un utilisateur</span>
+                    </a>
+                </div>
+            </div>
+                   
+            <div class="col-sm-10 mx-auto">
+                <div class="card shadow mb-4 ">
+                    <div class="card-header  py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Liste des utilisateurs</h6>
+                    </div>
+                    <div class="card-body table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr class="m-0 font-weight-bold bg-light text-black">
+                                   
+                                    <th>ID</th>
+                                    <th>Nom</th>
+                                    <th>Prénom</th>
+                                    <th>Username</th>
+                                    <th>email</th>
+                                    <th>Action</th>
+                                  </tr>
+                            </thead>
+                            <tbody>
+                                {% for x in utilisateur %}
+                                <tr>
+                                   
+                                    <td>{{x.id}}</td>
+                                    <td>{{x.last_name}}</td>
+                                    <td>{{x.first_name}}</td>
+                                    <td>{{x.username}}</td>
+                                    <td>{{x.email}}</td>
+                                    <td class="project-actions text-left">
+                                        <button type="button" class="btn btn-circle btn-sm btn-primary"  onclick="recup('{{x.id}}','{{x.last_name}}','{{x.first_name}}','{{x.username}}','{{x.email}}')">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                  
+                                    <a class="btn btn-circle btn-sm btn-secondary" data-toggle="modal" data-target="#deleteutilisateurModal{{x.id}}">
+                                    <i class="fas fa-trash" data-toggle="tooltip" title="Supprimer">
+                                    </i></a>
+                                    
+                                    <div class="modal fade" id="deleteutilisateurModal{{x.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                                    aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Are you sure to delete this user {{x.id}} {{x.username}}</h5>
+                                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">Select "delete" below if you are ready to delete this user {{x.id}} {{x.username}}.</div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                                                    <a class="btn btn-primary" href="{% url 'deleteutilisateur' x.id %}">delete</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                   
+                                    </td>                            
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-10 mx-auto" id="creationutilisateur" style="display: none;">
+                <div class="card shadow mb-4 ">
+                    <div class="card-header  py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Ajouter un utilisateur</h6>
+                    </div>
+                    <!-- <form method="post" action="" autocomplete="off" class="form-horizontal">
+                        {% csrf_token %}
+                        <div class="card-body">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="Codedepartement">Code</label>
+                                    <input type="text" class="form-control" name="code" id="Codedepartement"
+                                        placeholder="Entrez le code">
+                                </div>
+                                <div class="form-group">
+                                    <label for="Libelledepartement">Libelle</label>
+                                    <input type="text" class="form-control" name="libelle" id="Libelledepartement"
+                                        placeholder="Entrez le libelle">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Ajouter</button>
+                        </div>
+                    </form> -->
+                    <form method="post" action="" class="user" id="formUp">
+                        {% csrf_token %}
+                    
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="first_name" class="font-weight-bold text-black">Prénom :</label>
+                                        <input type="text" class="form-control" name="first_name" id="first_name" placeholder="Entrez le prénom de l'utilisateur">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="last_name" class="font-weight-bold text-black">Nom :</label>
+                                        <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Entrez le nom de l'utilisateur">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="email" class="font-weight-bold text-black">Email :</label>
+                            <input type="text" class="form-control" name="email" id="email" placeholder="Entrez l'email de l'utilisateur">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="username" class="font-weight-bold text-black">Nom d'utilisateur :</label>
+                                        <input type="text" class="form-control" name="username" id="username" placeholder="Entrez le username">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="password1" class="font-weight-bold text-black">Mot de passe :</label>
+                            <input type="password" class="form-control" name="password1" id="password1" placeholder="Entrez le mot de passe">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="password2" class="font-weight-bold text-black">Confirmer le mot de passe :</label>
+                                        <input type="password" class="form-control" name="password2" id="password2" placeholder="Confirmez le mot de passe">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                                          
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn bg-gradient-info  text-light ml-2" id="ajouterutilisateur">Ajouter</button>
+                            <button type="submit" class="btn btn bg-gradient-success  text-light ml-2" style="display:none;" id="modifierutilisateur" >Modifier</button>
+                        </div>
+                    </form>
+                    
+                    
+                </div>
+            </div>
+           
+        </div>
+    </div>
+    <script>
+        function recup(id,last_name,first_name,username,email) {
+        
+            document.getElementById("last_name").value =last_name;
+            document.getElementById("first_name").value = first_name;
+            document.getElementById("username").value =username;
+            document.getElementById("email").value =email;
+            document.getElementById("modifierutilisateur").style.display ='block';
+            document.getElementById("ajouterutilisateur").style.display ='none';
+            document.getElementById("creationutilisateur").style.display ='block';
+
+            // Générez l'URL de manière dynamique ici
+            var updateUrl = "{% url 'updateutilisateur' 0 %}".replace('0', id);
+            console.log(updateUrl);
+            document.getElementById("formUp").setAttribute('action', updateUrl);
+            
+        
+          }
+        function affichecreationutilisateur()
+        {
+            document.getElementById("creationutilisateur").style.display ='block';
+            document.getElementById("last_name").value ='';
+            document.getElementById("first_name").value = '';
+            document.getElementById("username").value ='';
+            document.getElementById("email").value ='';
+            document.getElementById("modifierutilisateur").style.display ='none';
+            document.getElementById("ajouterutilisateur").style.display ='block';
+            var updateUrl = "{% url 'addutilisateur'  %}";
+            document.getElementById("formUp").setAttribute('action', updateUrl);
+
+        }
+        
+          </script> 
+{% endblock %}
+

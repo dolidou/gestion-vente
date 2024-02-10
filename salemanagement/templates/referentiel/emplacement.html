@@ -1,0 +1,163 @@
+{% extends "index.html" %}
+
+{% block title %}Emplacement article{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-11">
+                <div class="text-right mb-3"> <!-- Utilisation de la classe text-right pour aligner à droite et mb-3 pour la marge en bas -->
+                        <!-- <button class="btn btn-primary" id="afficherajouteremplacement" onclick="affichecreationemplacement()">Ajouter un emplacement article</button> -->
+                        <a   class="btn bg-gradient-primary border-left-secondary border-bottom-secondary ml-2 text-light btn-icon-split" id="afficherajouteremplacement" onclick="affichecreationemplacement()">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-arrow-right"  ></i>
+                            </span>
+                            <span class="text text-black">Créer un emplacement</span>
+                    </a>
+                </div>
+            </div>
+                   
+            <div class="col-sm-10 mx-auto">
+                <div class="card shadow mb-4 ">
+                    <div class="card-header  py-3 d-flex flex-row align-items-center justify-content-between
+                    ">
+                        <h6 class="m-0 font-weight-bold text-primary">Liste des emplacements</h6>
+                    </div>
+                    <div class="card-body table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr class="m-0 font-weight-bold bg-light text-black">
+                                   
+                                    <th>ID </th>
+                                    <th>Code</th>
+                                    <th>Description</th>
+                                   <th>Action</th>
+                                  </tr>
+                            </thead>
+                            <tbody>
+                                {% for x in emplacement %}
+                                <tr>
+                                   
+                                    <td>{{x.id}}</td>
+                                    <td>{{x.code}}</td>
+                                    <td>{{x.description}}</td>
+                                    <td class="project-actions text-left">
+                                        <button type="button" class="btn btn-circle btn-sm btn-primary"  onclick="recup('{{x.id}}','{{x.code}}','{{x.description}}')">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </button>
+                                  
+                                    <a class="btn btn-circle btn-sm btn-secondary" data-toggle="modal" data-target="#deleteemplacementModal{{x.id}}">
+                                    <i class="fas fa-trash" data-toggle="tooltip" title="Supprimer">
+                                    </i></a>
+                                    
+                                    <div class="modal fade" id="deleteemplacementModal{{x.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                                    aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Are you sure to delete this article location {{x.id}} {{x.code}}</h5>
+                                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">Select "delete" below if you are ready to delete this article location {{x.id}} {{x.code}}.</div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                                                    <a class="btn btn-primary" href="{% url 'deleteemplacement' x.id %}">delete</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                   
+                                    </td>                            
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-10 mx-auto" id="creationemplacement" style="display: none;">
+                <div class="card shadow mb-4 ">
+                    <div class="card-header  py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Ajouter un article</h6>
+                    </div>
+                    <!-- <form method="post" action="" autocomplete="off" class="form-horizontal">
+                        {% csrf_token %}
+                        <div class="card-body">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="Codedepartement">Code</label>
+                                    <input type="text" class="form-control" name="code" id="Codedepartement"
+                                        placeholder="Entrez le code">
+                                </div>
+                                <div class="form-group">
+                                    <label for="Libelledepartement">Libelle</label>
+                                    <input type="text" class="form-control" name="libelle" id="Libelledepartement"
+                                        placeholder="Entrez le libelle">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Ajouter</button>
+                        </div>
+                    </form> -->
+                    <form method="post" action="{% url 'addemplacement' %}" class="user" id="formUp">
+                        {% csrf_token %}
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="codearticle" class="m-0 font-weight-bold text-black">Code :</label>
+                                        <input type="text" class="form-control" name="code" id="codeemplacement" placeholder="Entrez le code de l'emplacement">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="descriptionemplacement" class="m-0 font-weight-bold text-black">Description :</label>
+                                        <input type="text" class="form-control" name="description" id="descriptionemplacement" placeholder="Entrez la description de l'emplacement">
+                                    </div>
+                                </div>
+                            </div>
+
+                          </div>
+                        <!-- /.card-body -->
+        
+                        <div class="card-footer">
+                          <button type="submit" class="btn btn bg-gradient-info  text-light ml-2" id="ajouteremplacement">Ajouter</button>
+                          <button type="submit" class="btn btn bg-gradient-success  text-light ml-2" style="display:none;" id="modifieremplacement" >Modifier</button>
+                        </div>
+                      </form>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+    <script>
+        function recup(id,code,description) {
+        
+            document.getElementById("codeemplacement").value =code;
+            document.getElementById("descriptionemplacement").value = description;
+            document.getElementById("modifieremplacement").style.display ='block';
+            document.getElementById("ajouteremplacement").style.display ='none';
+            document.getElementById("creationemplacement").style.display ='block';
+
+            // Générez l'URL de manière dynamique ici
+            var updateUrl = "{% url 'updateemplacement' 0 %}".replace('0', id);
+            document.getElementById("formUp").setAttribute('action', updateUrl);
+            
+        
+          }
+        function affichecreationemplacement()
+        {
+            document.getElementById("creationemplacement").style.display ='block';
+            document.getElementById("codeemplacement").value ='';
+            document.getElementById("descriptionemplacement").value = '';
+            document.getElementById("modifieremplacement").style.display ='none';
+            document.getElementById("ajouteremplacement").style.display ='block';
+        }
+        
+          </script> 
+{% endblock %}
+
